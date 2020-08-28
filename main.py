@@ -1,3 +1,4 @@
+import re
 import requests
 from bs4 import BeautifulSoup
 
@@ -14,17 +15,28 @@ def get_html_file():
 
 # get_html_file()
 
-soup = BeautifulSoup(open('./res.html'), 'html.parser')
+def all_detail():
+    soup = BeautifulSoup(open('./res.html'), 'html.parser')
 
-cuisine = soup.find('h1', class_='search_title').string
+    cuisine = soup.find('h1', class_='search_title').string
 
-card = soup.find('div', class_='card search-snippet-card search-card')
+    card = soup.find('div', class_='card search-snippet-card search-card')
 
-# pertama dapetin areanya dulu, terus dapetin semua text di tag span
-asso_cuisine = card.find('span', class_='col-s-11 col-m-12 nowrap pl0').text
-organisation = card.find('a', class_='result-title').text
-address = card.find('')
-location = card.find('a', class_='search_result_subzone').text
-phone = card.find('a', class_='res-snippet-ph-info')['data-phone-no-str']
+    # pertama dapetin areanya dulu, terus dapetin semua text di tag span
+    asso_cuisine = card.find('span', class_='col-s-11 col-m-12 nowrap pl0').text
+    organisation = card.find('a', class_='result-title').text
+    address = card.find('div', class_='search-result-address').text
+    location = card.find('a', class_='search_result_subzone').text
+    phone = card.find('a', class_='res-snippet-ph-info')['data-phone-no-str']
 
-print(phone)
+    # masukin character, contoh -> , Caroline Springs ke variable cut | dipakai buat split terus diambil item pertama yaitu addressnya
+    cut = f', {location}'
+    x = address.strip().split(cut)
+
+    # strip() digunain untuk ngilangin spasi
+    print(f'cuisine = {cuisine.strip()}')
+    print(f'assosiation cuisine = {asso_cuisine}')
+    print(f'organisation = {organisation.strip()}')
+    print(f'address = {x[0]}')
+    print(f'location = {location}')
+    print(f'phone = {phone}')
