@@ -42,4 +42,37 @@ def all_detail():
         print(f'phone = {phone}')
         print('---------')
 
-all_detail()
+# all_detail()
+
+
+
+
+# PAGINATION
+def get_urls():
+    # request urlnya | query string parameter | methodnya
+    # url -> https://www.zomato.com/melbourne/restaurants/cafes?page=5
+    # request url -> https://www.zomato.com/melbourne/restaurants/cafes    <- masih di bagian cafes, belum di kategori laen
+    # query -> page= nomor halaman
+    # method -> get
+    params = {
+        'page': 3
+    }
+
+    req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'})
+
+    # coba buat html
+    f = open('./res3.html', 'w+')
+    f.write(req.text)
+    f.close()
+
+
+soup = BeautifulSoup(open('./res.html'), 'html.parser')
+
+# udah jadi
+total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
+total_page = int(total_page)
+page = 0
+for tp in range(total_page):
+    page += 1
+    print(page)
+
