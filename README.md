@@ -32,6 +32,6 @@ Cuisine | Associate Cuisine | Organisation | Address | Location | Phone
 
 ---
 1. Coba dapetin sesuai yang client minta [v]
-2. Terus lewatin pagination sampai 3 halaman dulu
+2. Terus lewatin pagination sampai 3 halaman dulu [v]
 3. export ke csv file
 4. 

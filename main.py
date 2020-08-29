@@ -1,15 +1,16 @@
 import re
-import requests
+import requests, csv, time
 from bs4 import BeautifulSoup
 
 url = 'https://www.zomato.com/melbourne/restaurants/cafes'
 
-def get_html_file():
+def get_html_file(url_requested, page):
+    print('Getting pages...')
     # User-Agent buat ngehindarin error 403
-    req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+    req = requests.get(url_requested, headers={'User-Agent': 'Mozilla/5.0'})
 
     # buat file html, biar ngga berulang kali request
-    f = open('./res.html', 'w+')
+    f = open(f'./res{page}.html', 'w+')
     f.write(req.text)
     f.close()
 
@@ -42,37 +43,29 @@ def all_detail():
         print(f'phone = {phone}')
         print('---------')
 
-# all_detail()
-
-
-
-
 # PAGINATION
 def get_urls():
-    # request urlnya | query string parameter | methodnya
-    # url -> https://www.zomato.com/melbourne/restaurants/cafes?page=5
-    # request url -> https://www.zomato.com/melbourne/restaurants/cafes    <- masih di bagian cafes, belum di kategori laen
-    # query -> page= nomor halaman
-    # method -> get
-    params = {
-        'page': 3
-    }
+    print('Getting urls...')
+    soup = BeautifulSoup(open('./res.html'), 'html.parser')
+    # dapetin total page, mulai dari div dengan class -> ke anaknya -> anakknya lagi -> sodara anaknya
+    total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
+    total_page = int(total_page)
 
-    req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'})
+    for page in range(2):
+        page += 1
+        # request urlnya | query string parameter | methodnya
+        # url -> https://www.zomato.com/melbourne/restaurants/cafes?page=5
+        # request url -> https://www.zomato.com/melbourne/restaurants/cafes    <- masih di bagian cafes, belum di kategori laen
+        # query -> page= nomor halaman
+        # method -> get
+        params = {
+            'page': page
+        }
 
-    # coba buat html
-    f = open('./res3.html', 'w+')
-    f.write(req.text)
-    f.close()
-
-
-soup = BeautifulSoup(open('./res.html'), 'html.parser')
-
-# udah jadi
-total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
-total_page = int(total_page)
-page = 0
-for tp in range(total_page):
-    page += 1
-    print(page)
+        # User-Agent buat ngehindarin error 403
+        req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'})
+        # print(req.url) <- buat print urlnya uncomment aja kalau mau coba
+        url_requested = req.url
+        # coba buat html
+        get_html_file(url_requested, page)
 
