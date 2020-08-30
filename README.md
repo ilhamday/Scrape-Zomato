@@ -35,3 +35,5 @@ Cuisine | Associate Cuisine | Organisation | Address | Location | Phone
 2. Terus lewatin pagination sampai 3 halaman dulu [v]
 3. export ke csv file [v]
 4. kasih time sleep
+
+kalau atas udah kecentang semua, coba utak atik untuk return-nya.
