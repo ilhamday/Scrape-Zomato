@@ -1,7 +1,8 @@
 import requests, csv, time
 from bs4 import BeautifulSoup
 
-url = 'https://www.zomato.com/melbourne/restaurants/chinese'
+# udah diganti pake fungsi checking_category
+# url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
 # def get_html_file(url_requested, page):
 #     print('Getting pages...')
@@ -16,6 +17,7 @@ url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
 def get_detail(page):
     print('Getting details...')
+
     soup = BeautifulSoup(open(f'./result_html/res{page}.html'), 'html.parser')
 
     cuisine = soup.find('h1', class_='search_title').text
@@ -53,10 +55,12 @@ def get_detail(page):
         writer.writerow(data)
 
 # PAGINATION
-def get_urls():
+def get_urls(url_checked):
     print('Getting urls...')
 
-    req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}) # 1 kali req
+    print(url_checked)
+
+    req = requests.get(url_checked, headers={'User-Agent': 'Mozilla/5.0'}) # 1 kali req
     soup = BeautifulSoup(req.text, 'html.parser')
 
     # dapetin total page, mulai dari div dengan class -> ke anaknya -> anakknya lagi -> sodara anaknya
@@ -68,7 +72,7 @@ def get_urls():
     # for page in range(2):
     for page in range(total_page):
         page += 1
-
+        print(f'Creating res{page}.html ...')
         # request urlnya | query string parameter | methodnya
         # url -> https://www.zomato.com/melbourne/restaurants/cafes?page=5
         # request url -> https://www.zomato.com/melbourne/restaurants/cafes    <- masih di bagian cafes, belum di kategori laen
@@ -79,7 +83,7 @@ def get_urls():
         }
 
         # User-Agent buat ngehindarin error 403
-        req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'}) # request berdasarkan pagenya
+        req = requests.get(url_checked, params=params, headers={'User-Agent': 'Mozilla/5.0'}) # request berdasarkan pagenya
 
         # print(req.url) <- buat print urlnya uncomment aja kalau mau coba
 
@@ -94,8 +98,8 @@ def get_urls():
             print('Wait for 5 sec')
             time.sleep(5)
 
-        # if page == 2:
-        #     break
+        if page == 2:
+            break
 
     return total_page
 
@@ -107,26 +111,46 @@ def create_csv(total_page):
     headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
     writer.writerow(headers)
 
-    # soup = BeautifulSoup(open('./result_html/res1.html'), 'html.parser')
-    # total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
     total_page = int(total_page)
 
     for page in range(total_page):
         page += 1
         get_detail(page)
 
+def checking_categroy_url(url_with_categoty):
+    print(f'Checking url...')
+
+    check_url = requests.get(url_with_categoty, headers={'User-Agent': 'Mozilla/5.0'})
+
+    if check_url.status_code == 200:
+        print('Category found!')
+        url_checked = url_with_categoty
+        return url_checked
+    else:
+        print('Category not found!!!')
+
+
+
 def run():
     while True:
-        options = int(input('1. Collecting URL\n2. Create CSV\n3. Exit\nInput angka: '))
+        options = int(input('--------\n1. \n2. \n3. \nInput angka: '))
 
         if options == 1:
-            total_page = get_urls()
+            url = 'https://www.zomato.com/melbourne/restaurants/'
+            categoty = input('Input Category: ')
+
+            url_with_category = url + categoty
+
+            url_checked = checking_categroy_url(url_with_category)
 
         if options == 2:
+            total_page = get_urls(url_checked)
+
+        if options == 3:
             # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
             create_csv(total_page)
 
-        if options == 3:
+        if options == 4:
             exit()
 
 

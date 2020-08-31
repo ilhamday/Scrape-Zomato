@@ -1,5 +1,6 @@
 .idea/
 result_html/
+coba_coba.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
