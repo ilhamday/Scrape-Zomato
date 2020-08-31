@@ -16,7 +16,6 @@ url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 #     f.write(req.text)
 #     f.close()
 
-
 def get_detail(page):
     print('Getting details...')
     soup = BeautifulSoup(open(f'./result_html/res{page}.html'), 'html.parser')
@@ -59,14 +58,14 @@ def get_detail(page):
 def get_urls():
     print('Getting urls...')
 
-    req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+    req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}) # 1 kali req
     soup = BeautifulSoup(req.text, 'html.parser')
 
     # dapetin total page, mulai dari div dengan class -> ke anaknya -> anakknya lagi -> sodara anaknya
     total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
     total_page = int(total_page)
 
-    list_urls = []
+    # list_urls = []
 
     # for page in range(2):
     for page in range(total_page):
@@ -82,11 +81,11 @@ def get_urls():
         }
 
         # User-Agent buat ngehindarin error 403
-        req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'})
+        req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'}) # request berdasarkan pagenya
 
         # print(req.url) <- buat print urlnya uncomment aja kalau mau coba
 
-        list_urls.append(req.url)
+        # list_urls.append(req.url)
 
         # buat file html, biar ngga berulang kali request
         f = open(f'./result_html/res{page}.html', 'w+')
@@ -99,7 +98,6 @@ def get_urls():
 
         # if page == 2:
         #     break
-
 
     return total_page
 
@@ -122,20 +120,16 @@ def create_csv(total_page):
 
 def run():
     while True:
-        options = int(input('1. Collecting URL\n2. Collecting HTML file\n3. Create CSV\n4. Exit\nInput angka: '))
+        options = int(input('1. Collecting URL\n2. Create CSV\n3. Exit\nInput angka: '))
 
         if options == 1:
             total_page = get_urls()
 
         if options == 2:
-            #get_html_file()
-            pass
-
-        if options == 3:
             # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
             create_csv(total_page)
 
-        if options == 4:
+        if options == 3:
             exit()
 
 

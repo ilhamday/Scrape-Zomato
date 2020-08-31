@@ -1,7 +1,7 @@
 # upwork-tomatoz
-Untuk latian scrap project dari upwork  
+Scrape data from zomato.com, get the data from all of the following categories in "Melbourne" Autralia. Result in csv file.
 
-Scrape data dari beberapa categorie, Lokasi nya di "Melbourne" Australia
+Categories:
 - cafe
 - chinese
 - dumplings
@@ -24,18 +24,15 @@ Scrape data dari beberapa categorie, Lokasi nya di "Melbourne" Australia
 - vegeterian
 - vietnamese
 - yum cha
-
-Hasilnya ditaruh di spredsheet file.  
-
-Headersnya:  
-Cuisine | Associate Cuisine | Organisation | Address | Location | Phone
-
 ---
-1. Coba dapetin sesuai yang client minta [v]
-2. Terus lewatin pagination sampai 3 halaman dulu [v]
-3. export ke csv file [v]
-4. kasih time sleep [v]
+Logic:
+
+1. Get the data that client want
+2. Get the urls to move to other page
+3. export to csv file
+4. give time.sleep
 ---
+
 not solved: 
 - kalao pake category lain gimana ngganti linknya?
 - gimana caranya nambah csv-nya kalao beda category?
