@@ -1,9 +1,7 @@
-import re
 import requests, csv, time
 from bs4 import BeautifulSoup
 
 url = 'https://www.zomato.com/melbourne/restaurants/chinese'
-
 
 # def get_html_file(url_requested, page):
 #     print('Getting pages...')
@@ -116,7 +114,6 @@ def create_csv(total_page):
     for page in range(total_page):
         page += 1
         get_detail(page)
-
 
 def run():
     while True:

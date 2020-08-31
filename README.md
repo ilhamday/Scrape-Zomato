@@ -25,12 +25,12 @@ Categories:
 - vietnamese
 - yum cha
 ---
-Logic:
+What I do to make it happens:
 
-1. Get the data that client want
-2. Get the urls to move to other page
-3. export to csv file
-4. give time.sleep
+- Get the data that client want
+- Get the urls to move to other page
+- export to csv file
+- give time.sleep
 ---
 
 not solved: 
