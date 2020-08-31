@@ -2,11 +2,12 @@ import re
 import requests, csv, time
 from bs4 import BeautifulSoup
 
-url = 'https://www.zomato.com/melbourne/restaurants/cafes'
+url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
 
 def get_html_file(url_requested, page):
     print('Getting pages...')
+
     # User-Agent buat ngehindarin error 403
     req = requests.get(url_requested, headers={'User-Agent': 'Mozilla/5.0'})
 
@@ -18,7 +19,7 @@ def get_html_file(url_requested, page):
 
 def get_detail(page):
     print('Getting details...')
-    soup = BeautifulSoup(open(f'./res{page}.html'), 'html.parser')
+    soup = BeautifulSoup(open(f'./result_html/res{page}.html'), 'html.parser')
 
     cuisine = soup.find('h1', class_='search_title').text
 
@@ -57,14 +58,13 @@ def get_detail(page):
 # PAGINATION
 def get_urls():
     print('Getting urls...')
-    soup = BeautifulSoup(open('/res.html'), 'html.parser')
+    soup = BeautifulSoup(open('./res.html'), 'html.parser')
     # dapetin total page, mulai dari div dengan class -> ke anaknya -> anakknya lagi -> sodara anaknya
     total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
     total_page = int(total_page)
 
     list_urls = []
 
-    # for page in range(2):
     for page in range(total_page):
         page += 1
 

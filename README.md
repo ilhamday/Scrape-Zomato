@@ -4,7 +4,7 @@ Untuk latian scrap project dari upwork
 Scrape data dari beberapa categorie, Lokasi nya di "Melbourne" Australia
 - cafe
 - chinese
-- dumpling
+- dumplings
 - french
 - greek
 - indian
@@ -34,6 +34,8 @@ Cuisine | Associate Cuisine | Organisation | Address | Location | Phone
 1. Coba dapetin sesuai yang client minta [v]
 2. Terus lewatin pagination sampai 3 halaman dulu [v]
 3. export ke csv file [v]
-4. kasih time sleep
-
-kalau atas udah kecentang semua, coba utak atik untuk return-nya.
+4. kasih time sleep [v]
+---
+not solved: 
+- kalao pake category lain gimana ngganti linknya?
+- gimana caranya nambah csv-nya kalao beda category?

@@ -2,29 +2,30 @@ import re
 import requests, csv, time
 from bs4 import BeautifulSoup
 
-url = 'https://www.zomato.com/melbourne/restaurants/cafes'
+url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
 
-def get_html_file(url_requested, page):
-    print('Getting pages...')
-    # User-Agent buat ngehindarin error 403
-    req = requests.get(url_requested, headers={'User-Agent': 'Mozilla/5.0'})
-
-    # buat file html, biar ngga berulang kali request
-    f = open(f'./result_html/res{page}.html', 'w+')
-    f.write(req.text)
-    f.close()
+# def get_html_file(url_requested, page):
+#     print('Getting pages...')
+#
+#     # User-Agent buat ngehindarin error 403
+#     req = requests.get(url_requested, headers={'User-Agent': 'Mozilla/5.0'})
+#
+#     # buat file html, biar ngga berulang kali request
+#     f = open(f'./result_html/res{page}.html', 'w+')
+#     f.write(req.text)
+#     f.close()
 
 
 def get_detail(page):
     print('Getting details...')
-    soup = BeautifulSoup(open(f'./res{page}.html'), 'html.parser')
+    soup = BeautifulSoup(open(f'./result_html/res{page}.html'), 'html.parser')
 
     cuisine = soup.find('h1', class_='search_title').text
 
     cards = soup.find_all('div', class_='card search-snippet-card search-card')
 
-    n = 0
+    # n = 0
     print('Adding to csv...')
     for card in cards:
         asso_cuisine = card.find('span', class_='col-s-11 col-m-12 nowrap pl0').text
@@ -33,14 +34,15 @@ def get_detail(page):
         location = card.find('a', class_='search_result_subzone').text
         phone = card.find('a', class_='res-snippet-ph-info')['data-phone-no-str']
 
-        # masukin character, contoh -> , Caroline Springs ke variable cut | dipakai buat split terus diambil item pertama yaitu addressnya
+        # masukin character, contoh -> ', Caroline' Springs ke variable cut | dipakai buat split terus diambil item pertama yaitu addressnya
         cut = f', {location}'
         x = address.strip().split(cut)
+
         # strip() digunain untuk ngilangin spasi
         cuisine = cuisine.strip()
         organisation = organisation.strip()
 
-        n = n + 1
+        # n = n + 1
         # print(f'{n}. cuisine = {cuisine}')
         # print(f'assosiation cuisine = {asso_cuisine}')
         # print(f'organisation = {organisation.strip()}')
@@ -53,11 +55,13 @@ def get_detail(page):
         data = [cuisine, asso_cuisine, organisation, x[0], location, phone]
         writer.writerow(data)
 
-
 # PAGINATION
 def get_urls():
     print('Getting urls...')
-    soup = BeautifulSoup(open('/res.html'), 'html.parser')
+
+    req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+    soup = BeautifulSoup(req.text, 'html.parser')
+
     # dapetin total page, mulai dari div dengan class -> ke anaknya -> anakknya lagi -> sodara anaknya
     total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
     total_page = int(total_page)
@@ -81,28 +85,34 @@ def get_urls():
         req = requests.get(url, params=params, headers={'User-Agent': 'Mozilla/5.0'})
 
         # print(req.url) <- buat print urlnya uncomment aja kalau mau coba
-        url_requested = req.url
-        # coba buat html
-        get_html_file(url_requested, page)
+
+        list_urls.append(req.url)
+
+        # buat file html, biar ngga berulang kali request
+        f = open(f'./result_html/res{page}.html', 'w+')
+        f.write(req.text)
+        f.close()
 
         if page % 5 == 0:
             print('Wait for 5 sec')
             time.sleep(5)
 
-        if page == 20:
-            break
+        # if page == 2:
+        #     break
 
-def create_csv():
+
+    return total_page
+
+def create_csv(total_page):
     # Buat file csv
     print('Creating csv...')
+
     writer = csv.writer(open('./test.csv', 'w', newline=''))  # method w -> write
-    # yang mau diambil dijadiin Header
     headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
     writer.writerow(headers)
 
-    soup = BeautifulSoup(open('./res.html'), 'html.parser')
-    # dapetin total page, mulai dari div dengan class -> ke anaknya -> anakknya lagi -> sodara anaknya
-    total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
+    # soup = BeautifulSoup(open('./result_html/res1.html'), 'html.parser')
+    # total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
     total_page = int(total_page)
 
     for page in range(total_page):
@@ -111,16 +121,22 @@ def create_csv():
 
 
 def run():
-    options = int(input('1. Collecting URL\n2. Collecting HTML file\n3. Create CSV\n'))
+    while True:
+        options = int(input('1. Collecting URL\n2. Collecting HTML file\n3. Create CSV\n4. Exit\nInput angka: '))
 
-    if options == 1:
-        get_urls()
+        if options == 1:
+            total_page = get_urls()
 
-    if options == 2:
-        get_html_file()
+        if options == 2:
+            #get_html_file()
+            pass
 
-    if options == 3:
-        create_csv()
+        if options == 3:
+            # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
+            create_csv(total_page)
+
+        if options == 4:
+            exit()
 
 
 if __name__ == '__main__':
