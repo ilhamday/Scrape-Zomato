@@ -4,58 +4,47 @@ from bs4 import BeautifulSoup
 # udah diganti pake fungsi checking_category
 # url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
-# def get_html_file(url_requested, page):
-#     print('Getting pages...')
-#
-#     # User-Agent buat ngehindarin error 403
-#     req = requests.get(url_requested, headers={'User-Agent': 'Mozilla/5.0'})
-#
-#     # buat file html, biar ngga berulang kali request
-#     f = open(f'./result_html/res{page}.html', 'w+')
-#     f.write(req.text)
-#     f.close()
+# def get_detail(total_page):
+def get_detail():
 
-def get_detail(page):
-    print('Getting details...')
+    # buat dapetin total_page tanpa ekseskusi no 2, kalau html file udah tersedia di result.html
+    soup = BeautifulSoup(open(f'./result_html/res1.html'), 'html.parser')
+    total_page = soup.find('div', class_='pagination-number').find('div').find('b').find_next_sibling('b').text
 
-    soup = BeautifulSoup(open(f'./result_html/res{page}.html'), 'html.parser')
+    total_page = int(total_page)
 
-    cuisine = soup.find('h1', class_='search_title').text
+    for page in range(total_page):
 
-    cards = soup.find_all('div', class_='card search-snippet-card search-card')
+        page += 1
+        # ini isi soupny audah beda lagi sama yang ada diatas for.
+        soup = BeautifulSoup(open(f'./result_html/res{page}.html'), 'html.parser')
 
-    # n = 0
-    print('Adding to csv...')
-    for card in cards:
-        asso_cuisine = card.find('span', class_='col-s-11 col-m-12 nowrap pl0').text
-        organisation = card.find('a', class_='result-title').text
-        address = card.find('div', class_='search-result-address').text
-        location = card.find('a', class_='search_result_subzone').text
-        phone = card.find('a', class_='res-snippet-ph-info')['data-phone-no-str']
+        cards = soup.find_all('div', class_='card search-snippet-card search-card')
+        cuisine = soup.find('h1', class_='search_title').text
+        print('Adding data to csv...')
 
-        # masukin character, contoh -> ', Caroline' Springs ke variable cut | dipakai buat split terus diambil item pertama yaitu addressnya
-        cut = f', {location}'
-        x = address.strip().split(cut)
+        for card in cards:
 
-        # strip() digunain untuk ngilangin spasi
-        cuisine = cuisine.strip()
-        organisation = organisation.strip()
+            asso_cuisine = card.find('span', class_='col-s-11 col-m-12 nowrap pl0').text
+            organisation = card.find('a', class_='result-title').text
+            address = card.find('div', class_='search-result-address').text
+            location = card.find('a', class_='search_result_subzone').text
+            phone = card.find('a', class_='res-snippet-ph-info')['data-phone-no-str']
 
-        # n = n + 1
-        # print(f'{n}. cuisine = {cuisine}')
-        # print(f'assosiation cuisine = {asso_cuisine}')
-        # print(f'organisation = {organisation.strip()}')
-        # print(f'address = {x[0]}')
-        # print(f'location = {location}')
-        # print(f'phone = {phone}')
-        # print('---------')
+            # masukin character, contoh -> ', Caroline' Springs ke variable cut | dipakai buat split terus diambil item pertama yaitu addressnya
+            cut = f', {location}'
+            x = address.strip().split(cut)
 
-        writer = csv.writer(open('./test.csv', 'a', newline='', encoding='utf-8'))  # method a -> append
-        data = [cuisine, asso_cuisine, organisation, x[0], location, phone]
-        writer.writerow(data)
+            # strip() digunain untuk ngilangin spasi
+            cuisine = cuisine.strip()
+            organisation = organisation.strip()
+
+            writer = csv.writer(open('./test.csv', 'a', newline='', encoding='utf-8'))  # method a -> append
+            data = [cuisine, asso_cuisine, organisation, x[0], location, phone]
+            writer.writerow(data)
 
 # PAGINATION
-def get_urls(url_checked):
+def get_urls_create_html(url_checked):
     print('Getting urls...')
 
     print(url_checked)
@@ -98,24 +87,17 @@ def get_urls(url_checked):
             print('Wait for 5 sec')
             time.sleep(5)
 
-        if page == 2:
-            break
+        # uncomment if you just want to try it, after 2 html it will break
+        # if page == 2:
+        #     break
 
     return total_page
 
-def create_csv(total_page):
+def create_csv():
     # Buat file csv
-    print('Creating csv...')
-
     writer = csv.writer(open('./test.csv', 'w', newline=''))  # method w -> write
     headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
     writer.writerow(headers)
-
-    total_page = int(total_page)
-
-    for page in range(total_page):
-        page += 1
-        get_detail(page)
 
 def checking_categroy_url(url_with_categoty):
     print(f'Checking url...')
@@ -129,11 +111,15 @@ def checking_categroy_url(url_with_categoty):
     else:
         print('Category not found!!!')
 
-
-
 def run():
     while True:
-        options = int(input('--------\n1. \n2. \n3. \nInput angka: '))
+        options = int(input('\n--------'
+                            '\n1.Check Category '
+                            '\n2.Get HTML files '
+                            '\n3.Create csv file'
+                            '\n4.Get details'
+                            '\n5.Exit'
+                            '\nInput number: '))
 
         if options == 1:
             url = 'https://www.zomato.com/melbourne/restaurants/'
@@ -144,15 +130,21 @@ def run():
             url_checked = checking_categroy_url(url_with_category)
 
         if options == 2:
-            total_page = get_urls(url_checked)
+            # total_page = get_urls(url_checked)
+            get_urls_create_html(url_checked)
 
         if options == 3:
-            # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
-            create_csv(total_page)
+            print('Creating csv...')
+            create_csv()
 
         if options == 4:
-            exit()
+            print('Getting details...')
+            # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
+            # get_detail(total_page)
+            get_detail()
 
+        if options == 5:
+            exit()
 
 if __name__ == '__main__':
     run()

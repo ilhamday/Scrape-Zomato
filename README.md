@@ -26,13 +26,13 @@ Categories:
 - yum cha
 ---
 What I do to make it happens:
-
+- Can scrap based on input categoty
 - Get the data that client want
 - Get the urls to move to other page
-- export to csv file
+- export to csv file.
+    - Add new category in csv file, don't choose number 3, because it will replace the csv file.
 - give time.sleep
 ---
 
-not solved: 
-- kalao pake category lain gimana ngganti linknya?
-- gimana caranya nambah csv-nya kalao beda category?
+next, maybe:
+- res{categoty}1.html <- nama file html yang didownload.
