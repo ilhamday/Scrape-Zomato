@@ -6,6 +6,11 @@ from bs4 import BeautifulSoup
 
 # def get_detail(total_page):
 def get_detail():
+    # number_result_category - name.csv
+    # Buat file csv
+    writer = csv.writer(open('./test.csv', 'w', newline=''))  # method w -> write
+    headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
+    writer.writerow(headers)
 
     # buat dapetin total_page tanpa ekseskusi no 2, kalau html file udah tersedia di result.html
     soup = BeautifulSoup(open(f'./result_html/res1.html'), 'html.parser')
@@ -93,12 +98,6 @@ def get_urls_create_html(url_checked):
 
     return total_page
 
-def create_csv():
-    # Buat file csv
-    writer = csv.writer(open('./test.csv', 'w', newline=''))  # method w -> write
-    headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
-    writer.writerow(headers)
-
 def checking_categroy_url(url_with_categoty):
     print(f'Checking url...')
 
@@ -133,9 +132,9 @@ def run():
             # total_page = get_urls(url_checked)
             get_urls_create_html(url_checked)
 
-        if options == 3:
-            print('Creating csv...')
-            create_csv()
+        # if options == 3:
+        #     print('Creating csv...')
+        #     create_csv()
 
         if options == 4:
             print('Getting details...')
