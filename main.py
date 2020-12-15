@@ -5,7 +5,13 @@ from bs4 import BeautifulSoup
 # url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
 # def get_detail(total_page):
-def get_detail():
+def get_detail(category_name):
+    # number_result_category - name.csv
+    # Buat file csv
+    writer = csv.writer(open(f'./result_csv/{category_name}_test.csv', 'w', newline=''))  # method w -> write
+    headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
+    writer.writerow(headers)
+    print('CSV file created...')
 
     # buat dapetin total_page tanpa ekseskusi no 2, kalau html file udah tersedia di result.html
     soup = BeautifulSoup(open(f'./result_html/res1.html'), 'html.parser')
@@ -39,7 +45,7 @@ def get_detail():
             cuisine = cuisine.strip()
             organisation = organisation.strip()
 
-            writer = csv.writer(open('./test.csv', 'a', newline='', encoding='utf-8'))  # method a -> append
+            writer = csv.writer(open(f'./result_csv/{category_name}_test.csv', 'a', newline='', encoding='utf-8'))  # method a -> append
             data = [cuisine, asso_cuisine, organisation, x[0], location, phone]
             writer.writerow(data)
 
@@ -93,20 +99,14 @@ def get_urls_create_html(url_checked):
 
     return total_page
 
-def create_csv():
-    # Buat file csv
-    writer = csv.writer(open('./test.csv', 'w', newline=''))  # method w -> write
-    headers = ['Cuisine', 'Assosiation Cuisine', 'Organisation', 'Address', 'Location', 'Phone']
-    writer.writerow(headers)
-
-def checking_categroy_url(url_with_categoty):
+def checking_categroy_url(url_with_category):
     print(f'Checking url...')
 
-    check_url = requests.get(url_with_categoty, headers={'User-Agent': 'Mozilla/5.0'})
+    check_url = requests.get(url_with_category, headers={'User-Agent': 'Mozilla/5.0'})
 
     if check_url.status_code == 200:
         print('Category found!')
-        url_checked = url_with_categoty
+        url_checked = url_with_category
         return url_checked
     else:
         print('Category not found!!!')
@@ -116,16 +116,16 @@ def run():
         options = int(input('\n--------'
                             '\n1.Check Category '
                             '\n2.Get HTML files '
-                            '\n3.Create csv file'
-                            '\n4.Get details'
-                            '\n5.Exit'
+                            # '\n3.Create csv file'
+                            '\n3.Get details to CSV'
+                            '\n4.Exit'
                             '\nInput number: '))
 
         if options == 1:
             url = 'https://www.zomato.com/melbourne/restaurants/'
-            categoty = input('Input Category: ')
+            category = input('Input Category: ')
 
-            url_with_category = url + categoty
+            url_with_category = url + category
 
             url_checked = checking_categroy_url(url_with_category)
 
@@ -133,17 +133,17 @@ def run():
             # total_page = get_urls(url_checked)
             get_urls_create_html(url_checked)
 
-        if options == 3:
-            print('Creating csv...')
-            create_csv()
+        # if options == 3:
+        #     print('Creating csv...')
+        #     create_csv()
 
-        if options == 4:
+        if options == 3:
             print('Getting details...')
             # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
             # get_detail(total_page)
-            get_detail()
+            get_detail(category)
 
-        if options == 5:
+        if options == 4:
             exit()
 
 if __name__ == '__main__':
