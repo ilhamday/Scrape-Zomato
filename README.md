@@ -22,12 +22,12 @@ The result will be a single CSV file that contain items in job requirement.
 ---
 
 ## How the programs work.
-When you run it, the program will give you some options.
-1.Check Category
-1.Get HTML files
-1.Get details to CSV
-1.Combine CSV
-1.Exit
+When you run it, the program will give you some options.   
+1. Check Category
+1. Get HTML files
+2. Get details to CSV
+1. Combine CSV
+1. Exit
 
 - Use **Check Category** to check if the category is available or not. 
 - If the category is found, choose the **Get HTML files**, it is necessary to create *result_html* folder first.
