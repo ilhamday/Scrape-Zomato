@@ -15,5 +15,21 @@ The result will be a single CSV file that contain items in job requirement.
 </p>
 
 ### Result
-give some pic excel ss
+<p align="center">
+  <img src="/picture/result_combined_csv.png" width="500px"/>
+</p>
 
+---
+
+## How the programs work.
+When you run it, the program will give you some options.
+1.Check Category
+1.Get HTML files
+1.Get details to CSV
+1.Combine CSV
+1.Exit
+
+- Use **Check Category** to check if the category is available or not. 
+- If the category is found, choose the **Get HTML files**, it is necessary to create *result_html* folder first.
+- And choose the **Get details to CSV** so the csv file will be created based on given category. 
+- Lastly, combine csv files using **Combine CSV** options.
