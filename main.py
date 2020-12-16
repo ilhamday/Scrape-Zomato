@@ -1,10 +1,11 @@
 import requests, csv, time
 from bs4 import BeautifulSoup
+import os, glob
+import pandas as pd
 
 # udah diganti pake fungsi checking_category
 # url = 'https://www.zomato.com/melbourne/restaurants/chinese'
 
-# def get_detail(total_page):
 def get_detail(category_name):
     # number_result_category - name.csv
     # Buat file csv
@@ -111,14 +112,27 @@ def checking_categroy_url(url_with_category):
     else:
         print('Category not found!!!')
 
+def combine_csv():
+    os.chdir('./result_csv')
+
+    extension = 'csv'
+    all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
+
+    # combine all files in the list
+    combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames])
+
+    # export to csv
+    combined_csv.to_csv('../combined_csv.csv', index = False, encoding='utf-8-sig')
+
+
 def run():
     while True:
         options = int(input('\n--------'
                             '\n1.Check Category '
                             '\n2.Get HTML files '
-                            # '\n3.Create csv file'
                             '\n3.Get details to CSV'
-                            '\n4.Exit'
+                            '\n4.Combine CSV'
+                            '\n9.Exit'
                             '\nInput number: '))
 
         if options == 1:
@@ -133,10 +147,6 @@ def run():
             # total_page = get_urls(url_checked)
             get_urls_create_html(url_checked)
 
-        # if options == 3:
-        #     print('Creating csv...')
-        #     create_csv()
-
         if options == 3:
             print('Getting details...')
             # kalau pakai ini, options 1 nya harus dijalanin dulu, karena kalau nggak total_page nya -> None
@@ -144,6 +154,9 @@ def run():
             get_detail(category)
 
         if options == 4:
+            combine_csv()
+
+        if options == 9:
             exit()
 
 if __name__ == '__main__':
