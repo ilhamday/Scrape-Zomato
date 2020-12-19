@@ -2,6 +2,7 @@ import requests, csv, time
 from bs4 import BeautifulSoup
 import os, glob
 import pandas as pd
+import delete_files
 
 # udah diganti pake fungsi checking_category
 # url = 'https://www.zomato.com/melbourne/restaurants/chinese'
@@ -56,6 +57,9 @@ def get_urls_create_html(url_checked):
 
     print(url_checked)
 
+    # Before get the new html for the desired category, firstly delete html from previous category
+    delete_files.del_file()
+
     req = requests.get(url_checked, headers={'User-Agent': 'Mozilla/5.0'}) # 1 kali req
     soup = BeautifulSoup(req.text, 'html.parser')
 
@@ -82,8 +86,6 @@ def get_urls_create_html(url_checked):
         req = requests.get(url_checked, params=params, headers={'User-Agent': 'Mozilla/5.0'}) # request berdasarkan pagenya
 
         # print(req.url) <- buat print urlnya uncomment aja kalau mau coba
-
-        # list_urls.append(req.url)
 
         # buat file html, biar ngga berulang kali request
         f = open(f'./result_html/res{page}.html', 'w+')
@@ -116,7 +118,7 @@ def combine_csv():
     os.chdir('./result_csv')
 
     extension = 'csv'
-    all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
+    all_filenames = [i for i in glob.glob(f'*.{extension}')]
 
     # combine all files in the list
     combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames])
