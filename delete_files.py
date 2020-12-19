@@ -11,3 +11,5 @@ def del_file():
 
     for f in files:
         os.remove(f)
+
+# comment for testing the 2nd commit
